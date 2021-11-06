@@ -1,0 +1,35 @@
+apply plugin: 'kotlin-kapt'
+android {
+    sourceSets {
+        main {
+            //jni库统一放在libs目录下
+//            jniLibs.srcDir = ['libs']
+            if (rootProject.ext.isDebug) {
+                //单独运行
+                manifest.srcFile 'src/main/debug/AndroidManifest.xml'
+            } else {
+                //合并到宿主中
+                manifest.srcFile 'src/main/AndroidManifest.xml'
+                resources {
+                    //正式版本时.剔除debug文件夹下的所有调式文件
+                    exclude '*/debug/*'
+                }
+                java {
+                    exclude '**/debug/**'
+                }
+            }
+        }
+    }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+kapt {
+
+}
+
+dependencies {
+    api project(':library:library-base')
+    api project(':library:library-common')
+}
