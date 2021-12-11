@@ -8,6 +8,8 @@ dependencies {
     api rootProject.ext.base["material"]
     api rootProject.ext.base["constraintlayout"]
 
+    api 'com.alibaba:arouter-api:1.5.1'
+
     testImplementation rootProject.ext.test["junit"]
     androidTestImplementation rootProject.ext.test["junit-ext"]
     androidTestImplementation rootProject.ext.test["espresso-core"]

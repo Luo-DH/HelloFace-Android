@@ -8,14 +8,15 @@ android {
 
 dependencies {
 
-    api project(':library:library-base')
+    implementation project(':library:library-base')
+    implementation project(':library:library-common')
 
-    if (isDebug) {
-        api project(':module:module-login')
-        api project(':module:module-main')
-        api project(':module:module-manager')
-        api project(':module:module-record')
-        api project(':module:module-setting')
+    if (!isDebug) {
+        implementation project(':module:module-login')
+        implementation project(':module:module-main')
+        implementation project(':module:module-manager')
+        implementation project(':module:module-record')
+        implementation project(':module:module-setting')
     }
 
 }
