@@ -1,0 +1,11 @@
+apply plugin: "com.android.library"
+apply from: "../../base.build.gradle"
+
+kapt {
+
+}
+
+dependencies {
+    api project(':library:library-base')
+    api project(':library:library-common')
+}

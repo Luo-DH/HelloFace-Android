@@ -1,40 +1,21 @@
-plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
-}
-
+apply plugin: "com.android.application"
+apply from: "../base.build.gradle"
 android {
-    compileSdk rootProject.ext.android.compileSdk
-
     defaultConfig {
         applicationId "com.fm.helloface"
-        minSdk rootProject.ext.android.minSdk
-        targetSdk rootProject.ext.android.targetSdk
-        versionCode rootProject.ext.android.versionCode
-        versionName rootProject.ext.android.versionName
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
     }
 }
 
 dependencies {
 
-    if (isDebug) {
+    api project(':library:library-base')
 
+    if (isDebug) {
+        api project(':module:module-login')
+        api project(':module:module-main')
+        api project(':module:module-manager')
+        api project(':module:module-record')
+        api project(':module:module-setting')
     }
 
 }
