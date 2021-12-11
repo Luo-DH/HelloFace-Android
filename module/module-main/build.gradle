@@ -1,0 +1,15 @@
+apply from: "../../module.build.gradle"
+
+android {
+
+    defaultConfig {
+        if (rootProject.ext.isDebug) {
+            applicationId "com.fm.module.main"
+        }
+    }
+
+}
+
+dependencies {
+
+}

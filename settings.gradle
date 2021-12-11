@@ -8,3 +8,11 @@ dependencyResolutionManagement {
 }
 rootProject.name = "HelloFace"
 include ':app'
+include ':library:library-base'
+include ':library:library-common'
+include ':module:module-main'
+include ':module:module-login'
+include ':module:module-setting'
+include ':library:library-face'
+include ':module:module-manager'
+include ':module:module-record'

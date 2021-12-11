@@ -1,0 +1,21 @@
+if (rootProject.ext.isDebug) {
+    apply plugin: "com.android.application"
+} else {
+    apply plugin: "com.android.library"
+}
+apply plugin: "kotlin-android"
+apply plugin: 'kotlin-kapt'
+apply from: "../../base.build.gradle"
+
+
+kapt {
+    arguments {
+        arg("AROUTER_MODULE_NAME", project.getName())
+    }
+}
+
+dependencies {
+    api project(':library:library-base')
+    api project(':library:library-common')
+    kapt "com.alibaba:arouter-compiler:1.5.1"
+}

@@ -1,0 +1,61 @@
+apply plugin: "kotlin-android"
+apply plugin: 'kotlin-kapt'
+
+android {
+
+    compileSdk rootProject.ext.android.compileSdk
+
+    defaultConfig {
+
+        minSdk rootProject.ext.android.minSdk
+        targetSdk rootProject.ext.android.targetSdk
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    sourceSets {
+        main {
+            //jni库统一放在libs目录下
+//            jniLibs.srcDir = ['libs']
+            if (rootProject.ext.isDebug) {
+                //单独运行
+                manifest.srcFile 'src/main/debug/AndroidManifest.xml'
+            } else {
+                //合并到宿主中
+                manifest.srcFile 'src/main/AndroidManifest.xml'
+                resources {
+                    //正式版本时.剔除debug文件夹下的所有调式文件
+                    exclude '*/debug/*'
+                }
+                java {
+                    exclude '**/debug/**'
+                }
+            }
+        }
+    }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+kapt {
+    arguments {
+        arg("AROUTER_MODULE_NAME", project.getName())
+    }
+}
