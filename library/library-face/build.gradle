@@ -1,5 +1,32 @@
 apply from: "../../library.build.gradle"
 
+android {
+
+    defaultConfig {
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++11 -frtti -fexceptions -fopenmp"
+                arguments '-DANDROID_PLATFORM=android-24', '-DANDROID_STL=c++_static', '-DANDROID_STL=c++_shared'
+
+            }
+        }
+
+        ndk {
+            moduleName "NcnnJniLog"
+            ldLibs "log", "z", "m"
+            abiFilters "armeabi-v7a", "arm64-v8a"
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.10.2'
+        }
+    }
+
+}
+
 dependencies {
     implementation project(":library:library-base")
 }
