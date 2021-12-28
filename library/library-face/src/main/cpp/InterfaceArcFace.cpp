@@ -414,7 +414,7 @@ Java_com_luo_learnc01_face_ArcFace_compareFeature(JNIEnv *env_db, jobject thiz_d
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_luo_learnc01_face_RetinaFace2_test(JNIEnv *env, jobject thiz, jobject bitmap) {
-    ncnn::Mat in = ncnn::Mat::from_android_bitmap(env, bitmap, ncnn::Mat::PIXEL_BGR) ;
+    ncnn::Mat in = ncnn::Mat::from_android_bitmap(env, bitmap, ncnn::Mat::PIXEL_BGR);
 }
 
 
@@ -448,4 +448,61 @@ Java_com_example_testface_native_Test_getFeatureWithWrap2(JNIEnv *env, jobject t
 
     return faceFeatureArray;
 
+}
+
+
+void check_face_init(JNIEnv *env, jobject, jobject manager) {
+    AAssetManager *mgr = AAssetManager_fromJava(env, manager);
+    ArcFace::face = new ArcFace(mgr);
+}
+
+jfloatArray check_face_getFeature(JNIEnv *env, jobject thiz,
+                                  jbyteArray face_date, jint w, jint h,
+                                  jintArray landmarks) {
+    jbyte *faceDate = env->GetByteArrayElements(face_date, NULL);
+
+    unsigned char *faceImageCharDate = (unsigned char *) faceDate;
+
+    // 将传入的Mat转换为ncnn的::Mat
+    ncnn::Mat ncnn_img_db = ncnn::Mat::from_pixels(faceImageCharDate, ncnn::Mat::PIXEL_RGBA2RGB, w,
+                                                   h);
+
+    // 得到五个人脸坐标点
+    jint *mtcnn_landmarks = env->GetIntArrayElements(landmarks, NULL);
+
+    int *mtcnnLandmarks = (int *) mtcnn_landmarks;
+
+    // 人脸对齐
+    ncnn::Mat inputImg = preprocess(ncnn_img_db, mtcnnLandmarks);
+
+    vector<float> faceFeature = ArcFace::face->getFeature(inputImg);
+
+
+    // 新建一个float类型的数组用于转换
+    jfloatArray faceFeatureArray = env->NewFloatArray(faceFeature.size());
+    env->SetFloatArrayRegion(faceFeatureArray, 0, faceFeature.size(), faceFeature.data());
+
+    return faceFeatureArray;
+
+}
+
+
+jfloat check_face_getResult(JNIEnv *env, jobject, jfloatArray feature1, jfloatArray feature2) {
+    jfloat *featureData1 = (jfloat *) env->GetFloatArrayElements(feature1, 0);
+    jsize featureSize1 = env->GetArrayLength(feature1);
+    jfloat *featureData2 = (jfloat *) env->GetFloatArrayElements(feature2, 0);
+    jsize featureSize2 = env->GetArrayLength(feature2);
+    // 创建转换的<float>类型的vector
+    std::vector<float> featureVector1(featureSize1), featureVector2(featureSize1);
+    if (featureSize1 != featureSize2) {
+        return 0;
+    }
+    for (int i = 0; i < featureSize1; i++) {
+        featureVector1.push_back(featureData1[i]);
+        featureVector2.push_back(featureData2[i]);
+    }
+    double score = calculSimilar(featureVector1, featureVector2, 1);
+    env->ReleaseFloatArrayElements(feature1, featureData1, 0);
+    env->ReleaseFloatArrayElements(feature2, featureData2, 0);
+    return score;
 }

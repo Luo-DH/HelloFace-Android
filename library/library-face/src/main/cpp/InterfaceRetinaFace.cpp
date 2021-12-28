@@ -356,13 +356,12 @@ Java_com_luo_learnc01_face_RetinaFace_detect5(JNIEnv *env, jobject thiz, jobject
 
 static ncnn::Net retinaface2;
 
-static ncnn::UnlockedPoolAllocator* blob_pool_allocator1 = 0;
-static ncnn::UnlockedPoolAllocator* workspace_pool_allocator1 = 0;
+static ncnn::UnlockedPoolAllocator *blob_pool_allocator1 = 0;
+static ncnn::UnlockedPoolAllocator *workspace_pool_allocator1 = 0;
 
-static ncnn::VulkanDevice* vkdev1 = 0;
-static ncnn::VkBlobAllocator* blob_vkallocator1 = 0;
-static ncnn::VkStagingAllocator* staging_vkallocator1 = 0;
-
+static ncnn::VulkanDevice *vkdev1 = 0;
+static ncnn::VkBlobAllocator *blob_vkallocator1 = 0;
+static ncnn::VkStagingAllocator *staging_vkallocator1 = 0;
 
 
 extern "C"
@@ -413,7 +412,7 @@ Java_com_luo_learnc01_face_RetinaFace2_init(JNIEnv *env, jobject thiz, jobject a
     retinaface2.opt = opt;
     // use vulkan compute
 //    if (ncnn::get_gpu_count() != 0)
-        opt.use_vulkan_compute = true;
+    opt.use_vulkan_compute = true;
 
     retinaface2.opt = opt;
 
@@ -553,7 +552,7 @@ Java_com_luo_learnc01_face_RetinaFace2_detectWithROI(
     // -------------------------- 创建landmark的array对象----------------------
 
     // -------------------------- 创建box对象----------------------------------
-    jclass box_jcls = env->FindClass("com/luo/learnc01/modules/Box");
+    jclass box_jcls = env->FindClass("com/luo/learnc01/modulesBox");
 
 
     jfieldID box_x1 = env->GetFieldID(box_jcls, "x1", "I");
@@ -592,8 +591,10 @@ Java_com_luo_learnc01_face_RetinaFace2_detectWithROI(
         jobject jobj = env->AllocObject(box_jcls);
         env->SetIntField(jobj, box_x1, (int) (obj.rect.x * ratio + wav_date[0]));
         env->SetIntField(jobj, box_y1, (int) (obj.rect.y * ratio + wav_date[1]));
-        env->SetIntField(jobj, box_x2, (int) (obj.rect.x * ratio + obj.rect.width * ratio + wav_date[0]));
-        env->SetIntField(jobj, box_y2, (int) (obj.rect.y * ratio + obj.rect.height * ratio + wav_date[1]));
+        env->SetIntField(jobj, box_x2,
+                         (int) (obj.rect.x * ratio + obj.rect.width * ratio + wav_date[0]));
+        env->SetIntField(jobj, box_y2,
+                         (int) (obj.rect.y * ratio + obj.rect.height * ratio + wav_date[1]));
 
         env->SetObjectField(jobj, box_landmarks, tmpArray);
 
@@ -636,3 +637,147 @@ Java_com_luo_learnc01_face_RetinaFace2_detect2(JNIEnv *env, jobject thiz, jobjec
     return tFaceInfo;
 }
 
+bool find_face_init(JNIEnv *env, jobject thiz, jobject assetManager) {
+    LOGD("hi");
+    AAssetManager *mgr = AAssetManager_fromJava(env, assetManager);
+
+    ncnn::Option opt;
+    opt.lightmode = true;
+    opt.num_threads = 4;
+
+    blob_pool_allocator1 = new ncnn::UnlockedPoolAllocator;
+    workspace_pool_allocator1 = new ncnn::UnlockedPoolAllocator;
+
+    opt.blob_allocator = blob_pool_allocator1;
+    opt.workspace_allocator = workspace_pool_allocator1;
+
+    const int gpu_device = 0;// FIXME hardcode
+    vkdev1 = ncnn::get_gpu_device(0);
+
+    blob_vkallocator1 = new ncnn::VkBlobAllocator(vkdev1);
+    staging_vkallocator1 = new ncnn::VkStagingAllocator(vkdev1);
+
+    opt.blob_vkallocator = blob_vkallocator1;
+    opt.workspace_vkallocator = blob_vkallocator1;
+    opt.staging_vkallocator = staging_vkallocator1;
+
+
+    opt.use_winograd_convolution = true;
+    opt.use_sgemm_convolution = true;
+
+    opt.use_vulkan_compute = true;
+
+    opt.use_fp16_packed = true;
+    opt.use_fp16_storage = true;
+    opt.use_fp16_arithmetic = true;
+    opt.use_int8_storage = true;
+    opt.use_int8_arithmetic = false;
+
+    opt.use_shader_pack8 = true;
+//
+    opt.use_bf16_storage = false;
+
+    ncnn::set_cpu_powersave(0);
+
+
+    retinaface2.opt = opt;
+    // use vulkan compute
+//    if (ncnn::get_gpu_count() != 0)
+    opt.use_vulkan_compute = true;
+
+    retinaface2.opt = opt;
+
+
+
+
+//    retinaface2.opt.use_vulkan_compute = true;
+//    retinaface2.opt.use_int8_arithmetic = true;
+//    retinaface2.opt.use_fp16_arithmetic = true;
+    //init param
+    int ret = retinaface2.load_param(mgr, "mnet.25-opt.param");
+//    int ret = retinaface2.load_param(mgr, "face.param");
+    if (ret != 0) {
+        __android_log_print(ANDROID_LOG_DEBUG, "RetinaFace", "load_param failed");
+        return JNI_FALSE;
+    }
+    //init bin
+    ret = retinaface2.load_model(mgr, "mnet.25-opt.bin");
+//    ret = retinaface2.load_model(mgr, "face.bin");
+    if (ret != 0) {
+        __android_log_print(ANDROID_LOG_DEBUG, "RetinaFace", "load_model failed");
+        return JNI_FALSE;
+    }
+    LOGD("native %d", ret);
+    return JNI_TRUE;
+}
+
+jobject find_face_detect(JNIEnv *env, jobject thiz, jobject bitmap) {
+    // -------------------------- 创建ArrayList对象----------------------------
+    jclass list_jcls = env->FindClass("java/util/ArrayList");
+
+    jmethodID list_init = env->GetMethodID(list_jcls, "<init>", "()V");
+
+    jobject list_obj = env->NewObject(list_jcls, list_init);
+
+    // ArrayList 中的add方法
+    jmethodID list_add = env->GetMethodID(list_jcls, "add", "(Ljava/lang/Object;)Z");
+    // -------------------------- 创建ArrayList对象----------------------------
+
+
+    // -------------------------- 创建landmark的array对象----------------------
+    jclass rectF_jcls = env->FindClass("android/graphics/PointF");
+
+    // -------------------------- 创建landmark的array对象----------------------
+
+
+    // -------------------------- 创建box对象----------------------------------
+    jclass box_jcls = env->FindClass("com/fm/library/face/module/Box");
+
+
+    jfieldID box_x1 = env->GetFieldID(box_jcls, "x1", "I");
+    jfieldID box_y1 = env->GetFieldID(box_jcls, "y1", "I");
+    jfieldID box_x2 = env->GetFieldID(box_jcls, "x2", "I");
+    jfieldID box_y2 = env->GetFieldID(box_jcls, "y2", "I");
+
+    jfieldID box_landmarks = env->GetFieldID(box_jcls, "landmarks", "[Landroid/graphics/PointF;");
+
+    // -------------------------- 创建box对象----------------------------------
+
+
+    // -------------------------- 创建rectF对象----------------------------------
+    jclass tmp_rectF_jcls = env->FindClass("android/graphics/PointF");
+    jfieldID tmp_rectF_x = env->GetFieldID(tmp_rectF_jcls, "x", "F");
+    jfieldID tmp_rectF_y = env->GetFieldID(tmp_rectF_jcls, "y", "F");
+    // -------------------------- 创建rectF对象----------------------------------
+
+
+    ncnn::Extractor ex = retinaface2.create_extractor();
+    ex.set_num_threads(2);
+    ncnn::Mat in = ncnn::Mat::from_android_bitmap(env, bitmap, ncnn::Mat::PIXEL_BGR);
+    std::vector<FaceObject> objs = detect_retinaface(retinaface2, in);
+    for (auto obj: objs) {
+
+        jobjectArray tmpArray = env->NewObjectArray(5, rectF_jcls, nullptr);
+        for (int i = 0; i < 5; i++) {
+            env->PushLocalFrame(1);
+            jobject rect_obj = env->AllocObject(tmp_rectF_jcls);
+            env->SetFloatField(rect_obj, tmp_rectF_x, obj.landmark[i].x);
+            env->SetFloatField(rect_obj, tmp_rectF_y, obj.landmark[i].y);
+            LOGD("%f %f", obj.landmark[i].x, obj.landmark[i].y);
+            rect_obj = env->PopLocalFrame(rect_obj);
+            env->SetObjectArrayElement(tmpArray, i, rect_obj);
+        }
+
+        jobject jobj = env->AllocObject(box_jcls);
+        env->SetIntField(jobj, box_x1, (int) (obj.rect.x));
+        env->SetIntField(jobj, box_y1, (int) (obj.rect.y));
+        env->SetIntField(jobj, box_x2, (int) (obj.rect.x + obj.rect.width));
+        env->SetIntField(jobj, box_y2, (int) (obj.rect.y + obj.rect.height));
+
+        env->SetObjectField(jobj, box_landmarks, tmpArray);
+
+        env->CallBooleanMethod(list_obj, list_add, jobj);
+    }
+
+    return list_obj;
+}

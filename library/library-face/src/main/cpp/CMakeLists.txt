@@ -13,7 +13,7 @@ add_library(
         InterfaceRetinaFace.cpp
         arcface/ArcFace.cpp
         retinaface/RetinaFace.cpp
-#        native-lib.cpp
+        native-lib.cpp
 )
 
 
