@@ -12,4 +12,8 @@ android {
 
 dependencies {
 
+    implementation rootProject.ext.camera["camera-core"]
+    implementation rootProject.ext.camera["camera-lifecycle"]
+    implementation rootProject.ext.camera["camera-view"]
+
 }

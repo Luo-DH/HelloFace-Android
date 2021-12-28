@@ -26,4 +26,10 @@ ext {
             "truth"        : "com.google.truth:truth:1.0.1"
     ]
 
+    // 摄像头相关
+    camera = [
+            "camera-core"     : "androidx.camera:camera-camera2:1.0.1",
+            "camera-lifecycle": "androidx.camera:camera-lifecycle:1.0.1",
+            "camera-view"     : "androidx.camera:camera-view:1.0.0-alpha27"
+    ]
 }
