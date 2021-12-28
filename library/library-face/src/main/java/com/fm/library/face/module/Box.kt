@@ -8,5 +8,8 @@ data class Box(
     val x2: Int,
     val y2: Int,
 
+    var width: Int,
+    var height: Int,
+
     val landmarks: Array<PointF>
 )

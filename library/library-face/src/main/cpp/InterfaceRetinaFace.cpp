@@ -674,16 +674,15 @@ bool find_face_init(JNIEnv *env, jobject thiz, jobject assetManager) {
     opt.use_int8_arithmetic = false;
 
     opt.use_shader_pack8 = true;
-//
+
     opt.use_bf16_storage = false;
 
     ncnn::set_cpu_powersave(0);
 
-
-    retinaface2.opt = opt;
-    // use vulkan compute
-//    if (ncnn::get_gpu_count() != 0)
-    opt.use_vulkan_compute = true;
+//    // use vulkan compute
+//    if (ncnn::get_gpu_count() != 0) {
+//        opt.use_vulkan_compute = true;
+//    }
 
     retinaface2.opt = opt;
 

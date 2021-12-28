@@ -150,7 +150,7 @@ object Utils {
     }
 
 
-    fun getPixelsRGBA(image: Bitmap): ByteArray? {
+    fun getPixelsRGBA(image: Bitmap): ByteArray {
         // 计算图像由多少个像素点组成
         val bytes = image.byteCount
         val buffer = ByteBuffer.allocate(bytes) // 创建一个新的buffer
