@@ -30,6 +30,8 @@ object RouterPath {
     object Manager {
         private const val MANAGER = "module_manager"
         const val PAGE_MANAGER = "/manager/$MANAGER"
+        const val PAGE_HISTORY = "/manager/$MANAGER/history"
+        const val PAGE_STORE = "/manager/$MANAGER/store"
     }
 
     /**

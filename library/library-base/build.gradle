@@ -13,4 +13,6 @@ dependencies {
     testImplementation rootProject.ext.test["junit"]
     androidTestImplementation rootProject.ext.test["junit-ext"]
     androidTestImplementation rootProject.ext.test["espresso-core"]
+
+    api ("io.coil-kt:coil:1.1.1")
 }

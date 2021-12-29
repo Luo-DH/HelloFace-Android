@@ -3,6 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.20555555555555555" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.18614130434782608" />
+        <entry key="library/library-common/src/main/res/drawable/ic_common_back.xml" value="0.20555555555555555" />
+        <entry key="module/module-manager/src/main/res/layout/content_manager_activity_history.xml" value="0.28229166666666666" />
+        <entry key="module/module-manager/src/main/res/layout/fragment_second.xml" value="0.1503623188405797" />
+        <entry key="module/module-manager/src/main/res/layout/manager_activity_history.xml" value="0.25" />
+        <entry key="module/module-manager/src/main/res/layout/manager_activity_main.xml" value="0.14479166666666668" />
+        <entry key="module/module-manager/src/main/res/layout/manager_item_history.xml" value="0.375" />
+        <entry key="module/module-manager/src/main/res/layout/manager_item_store.xml" value="0.18614130434782608" />
+        <entry key="module/module-manager/src/main/res/layout/settings_activity.xml" value="0.18614130434782608" />
+        <entry key="module/module-manager/src/main/res/xml/root_preferences.xml" value="0.18614130434782608" />
         <entry key="module/module-record/src/main/res/drawable/shape_rectangle.xml" value="0.1796875" />
         <entry key="module/module-record/src/main/res/layout/record_activity_main.xml" value="0.11980749746707194" />
       </map>
