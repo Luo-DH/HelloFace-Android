@@ -8,13 +8,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.alibaba.android.arouter.facade.annotation.Route
-import com.fm.library.common.constants.RouterPath
-import com.fm.module.manager.R
-import com.fm.module.manager.User
-import com.fm.module.manager.databinding.ManagerItemHistoryBinding
 import com.fm.module.manager.databinding.ManagerItemStoreBinding
-import com.fm.module.manager.net.FaceMsg
+import com.fm.library.common.constants.module.FaceMsg
 
 class ManagerStoreAdapter :
     RecyclerView.Adapter<ManagerStoreAdapter.ManagerStoreViewHolder>() {

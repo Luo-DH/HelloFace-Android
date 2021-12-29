@@ -1,20 +1,13 @@
 package com.fm.module.manager.store
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.fm.library.common.constants.RouterPath
-import com.fm.library.common.constants.ext.getImageBitmapByUrl
-import com.fm.module.manager.User
+import com.fm.library.common.constants.net.GlobalServiceCreator
 import com.fm.module.manager.databinding.ManagerActivityStoreBinding
-import com.fm.module.manager.net.ManagerRsp
 import com.fm.module.manager.net.ManagerStoreApi
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import com.luo.library.net.ServiceCreator
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
 @Route(path = RouterPath.Manager.PAGE_STORE)
@@ -38,8 +31,7 @@ class ManagerActivityStore : AppCompatActivity() {
     }
 
     private fun requestFaceMsg() {
-        val creator = object : ServiceCreator("http://119.91.119.135/") {}
-        val api = creator.create<ManagerStoreApi>()
+        val api = GlobalServiceCreator.create<ManagerStoreApi>()
         runBlocking {
             val res = api.getAllFaces()
             if (res.isSuccessful && res.body()!!.code == 0) {

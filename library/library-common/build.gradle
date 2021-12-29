@@ -4,5 +4,6 @@ apply from: "../../base.build.gradle"
 dependencies {
 
     implementation project(":library:library-base")
+    implementation project(":library:library-net")
 
 }
