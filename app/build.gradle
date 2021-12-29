@@ -10,6 +10,7 @@ dependencies {
 
     implementation project(':library:library-base')
     implementation project(':library:library-common')
+    implementation project(':library:library-net')
 
     if (!isDebug) {
         implementation project(':module:module-login')

@@ -5,7 +5,7 @@ ext {
     android = [
             compileSdk : 30,
             minSdk     : 21,
-            targetSdk  : 30,
+            targetSdk  : 27,
             versionCode: 1,
             versionName: "1.0"
     ]
@@ -32,4 +32,13 @@ ext {
             "camera-lifecycle": "androidx.camera:camera-lifecycle:1.0.1",
             "camera-view"     : "androidx.camera:camera-view:1.0.0-alpha27"
     ]
+
+    // 网络请求相关
+    net = [
+            retrofit : "com.squareup.retrofit2:retrofit:2.9.0",
+            converter: "com.squareup.retrofit2:converter-gson:2.9.0",
+            okhttp   : "com.squareup.okhttp3:okhttp:4.9.0",
+            gson     : "com.google.code.gson:gson:2.8.6"
+    ]
+
 }

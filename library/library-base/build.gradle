@@ -13,4 +13,10 @@ dependencies {
     testImplementation rootProject.ext.test["junit"]
     androidTestImplementation rootProject.ext.test["junit-ext"]
     androidTestImplementation rootProject.ext.test["espresso-core"]
+
+
+    // Coroutines
+    api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9'
+    api 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9'
+
 }
