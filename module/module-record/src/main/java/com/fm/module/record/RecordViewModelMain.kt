@@ -34,7 +34,7 @@ class RecordViewModelMain(
     fun imageToBitmap(image: ImageProxy): Bitmap = repository.imageToBitmap(image)
 
     fun detectFace(bitmap: Bitmap) {
-        val smallBitmap = Utils.scaleBitmap(bitmap, 0.5f)!!
+        val smallBitmap = Utils.scaleBitmap(bitmap, 0.25f)!!
         // 裁剪bitmap
         val cast = measureTimeMillis {
             val res = Face.findFace(smallBitmap).also { it ->
