@@ -12,4 +12,7 @@ android {
 
 dependencies {
 
+    implementation project(':library:library-face')
+    implementation project(':library:library-net')
+
 }
