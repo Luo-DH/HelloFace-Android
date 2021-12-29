@@ -1,8 +1,6 @@
-package com.fm.module.record.sdk
+package com.fm.library.face
 
 import android.graphics.Bitmap
-import com.fm.library.face.FaceSdk
-import com.fm.library.face.Utils
 import com.fm.library.face.module.Box
 
 /**

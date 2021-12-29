@@ -2,10 +2,7 @@ package com.fm.module.record
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Matrix
 import android.graphics.RectF
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -17,7 +14,6 @@ import androidx.core.content.ContextCompat
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.fm.library.common.constants.RouterPath
 import com.fm.module.record.databinding.RecordActivityMainBinding
-import java.io.File
 import java.util.concurrent.Executors
 import androidx.camera.core.ImageCapture
 
@@ -27,10 +23,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.fm.library.common.constants.ext.toRotaBitmap
 import com.fm.library.face.FaceSdk
-import com.fm.library.face.Utils
 import com.fm.library.face.module.Box
-import com.fm.library.face.toCropBitmap
-import com.fm.module.record.sdk.Face
+import com.fm.library.face.Face
 import kotlin.concurrent.thread
 import kotlin.math.min
 

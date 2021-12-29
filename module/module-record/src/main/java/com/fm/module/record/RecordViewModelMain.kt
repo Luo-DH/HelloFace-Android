@@ -10,7 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.fm.library.face.Utils
 import com.fm.library.face.module.Box
 import com.fm.library.face.toCropBitmap
-import com.fm.module.record.sdk.Face
+import com.fm.library.face.Face
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
