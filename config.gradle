@@ -1,6 +1,6 @@
 ext {
 
-    isDebug = true
+    isDebug = false
 
     android = [
             compileSdk : 31,

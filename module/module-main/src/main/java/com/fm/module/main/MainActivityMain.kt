@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.fm.library.common.constants.DBFaceMsg
 import com.fm.library.common.constants.RouterPath
 import com.fm.library.face.FaceSdk
@@ -36,6 +37,15 @@ class MainActivityMain : AppCompatActivity() {
 
         // 设置数据观察
         setupObserver()
+
+        // 设置点击监听
+        setupClickListener()
+    }
+
+    private fun setupClickListener() {
+        binding.mainBtnToRecord.setOnClickListener {
+            ARouter.getInstance().build(RouterPath.Record.PAGE_RECORD).navigation()
+        }
     }
 
     private fun setupObserver() {

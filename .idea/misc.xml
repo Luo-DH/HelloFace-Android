@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="module/module-main/src/main/res/layout/main_activity_main.xml" value="0.18115942028985507" />
         <entry key="module/module-manager/src/main/res/layout/manager_item_store.xml" value="0.1" />
         <entry key="module/module-record/src/main/res/drawable/shape_rectangle.xml" value="0.1796875" />
         <entry key="module/module-record/src/main/res/layout/record_activity_main.xml" value="0.11980749746707194" />

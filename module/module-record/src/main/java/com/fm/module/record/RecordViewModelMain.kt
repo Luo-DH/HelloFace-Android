@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fm.library.common.constants.DBFaceMsg
 import com.fm.library.face.Utils
 import com.fm.library.face.module.Box
 import com.fm.library.face.toCropBitmap
@@ -33,7 +34,7 @@ class RecordViewModelMain(
     fun imageToBitmap(image: ImageProxy): Bitmap = repository.imageToBitmap(image)
 
     fun detectFace(bitmap: Bitmap) {
-        val smallBitmap = Utils.scaleBitmap(bitmap, 0.25f)!!
+        val smallBitmap = Utils.scaleBitmap(bitmap, 0.5f)!!
         // 裁剪bitmap
         val cast = measureTimeMillis {
             val res = Face.findFace(smallBitmap).also { it ->
@@ -72,11 +73,15 @@ class RecordViewModelMain(
     fun checkFace(feature: FloatArray) {
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
-                var res = 0f
                 val cast = measureTimeMillis {
-//                    res = Face.checkFace(feature, RecordActivityMain.feature)
+                    Log.d(TAG, "hello checkFace: ============================")
+                    DBFaceMsg.dbFaceMap.keys.forEach { key ->
+                        val fea = DBFaceMsg.dbFaceMap[key]!!
+                        val res = Face.checkFace(feature, fea)
+                        Log.d(TAG, "hello checkFace: name=$key res=$res")
+                    }
+                    Log.d(TAG, "hello checkFace: ============================")
                 }
-                Log.d(TAG, "checkFace: ${Thread.currentThread()} castTime=$cast result=${res}")
             }
         }
     }
