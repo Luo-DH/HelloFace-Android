@@ -5,6 +5,8 @@ import android.content.pm.PackageManager
 import android.graphics.RectF
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.camera.core.*
@@ -20,7 +22,10 @@ import androidx.camera.core.ImageCapture
 import android.util.Size
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.lifecycle.ViewModelProvider
+import coil.load
+import com.fm.library.common.constants.DBFaceMsg
 import com.fm.library.common.constants.ext.toRotaBitmap
 import com.fm.library.face.FaceSdk
 import com.fm.library.face.module.Box
@@ -50,12 +55,6 @@ class RecordActivityMain : AppCompatActivity() {
         viewBinding = RecordActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        thread {
-            Face
-            FaceSdk.FindFace.init(assets)
-            FaceSdk.CheckFace.init(assets)
-        }
-
         // Request camera permissions
         if (allPermissionsGranted()) {
             startCamera()
@@ -67,6 +66,13 @@ class RecordActivityMain : AppCompatActivity() {
 
         setupViewModel()
         setupObserver()
+
+        setAnalysis()
+    }
+
+    private fun setAnalysis() {
+        viewBinding.boxPrediction.visibility = View.GONE
+        viewBinding.recordTvRes.visibility = View.GONE
         mImageAnalysis.setAnalyzer(mImageAnalysisExecutor) { image ->
             image.use {
                 val bitmap = viewModel.imageToBitmap(image).toRotaBitmap()
@@ -185,7 +191,42 @@ class RecordActivityMain : AppCompatActivity() {
                 viewModel.checkFace(feature = it)
             }
         }
+
+        // 人脸比对结果
+        viewModel.recognizeRes.observe(this) { name ->
+            viewModel.vote(name)
+        }
+
+        viewModel.imgUrl.observe(this) { imgUrl ->
+//            viewBinding.recordImShowRes.load(imgUrl)
+//            val anim = AnimationUtils.loadAnimation(applicationContext, R.anim.alpha_anim)
+//            viewBinding.recordImShowRes.animation = anim
+        }
+
+        // 投票结果
+        viewModel.voteRes.observe(this) { name ->
+            viewBinding.recordTvRes.apply {
+                viewBinding.recordTvRes.visibility = View.VISIBLE
+                text = name
+            }
+            viewModel.clearVoteMap()
+            mImageAnalysis.clearAnalyzer()
+
+            viewModel.requestBitmap(name)
+
+
+            mHandler.postDelayed({
+                viewBinding.boxPrediction.visibility = View.GONE
+            }, 500)
+
+            mHandler.postDelayed(Runnable {
+                setAnalysis()
+            }, 3500)
+        }
+
     }
+
+    private val mHandler = Handler(Looper.getMainLooper())
 
     /**
      * 处理人脸检测后得到的人脸框

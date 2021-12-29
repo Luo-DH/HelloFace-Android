@@ -2,6 +2,10 @@ package com.fm.module.record
 
 import android.graphics.*
 import androidx.camera.core.ImageProxy
+import com.fm.library.common.constants.module.FaceRsp
+import com.fm.library.common.constants.net.GlobalServiceCreator
+import com.fm.module.record.net.RecordNetApi
+import retrofit2.Response
 import java.io.ByteArrayOutputStream
 
 class RecordRepositoryMain {
@@ -41,6 +45,11 @@ class RecordRepositoryMain {
         vBuffer[nv21, ySize, vSize]
         uBuffer[nv21, ySize + vSize, uSize]
         return nv21
+    }
+
+    suspend fun requestBitmap(name: String): Response<FaceRsp> {
+        val api = GlobalServiceCreator.create<RecordNetApi>()
+        return api.getFaceBitmap(name)
     }
 
 }
