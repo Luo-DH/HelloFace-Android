@@ -1,0 +1,13 @@
+apply plugin: "com.android.library"
+apply from: "../../base.build.gradle"
+
+dependencies {
+
+    implementation project(":library:library-base")
+
+    api rootProject.ext.net["retrofit"]
+    api rootProject.ext.net["okhttp"]
+    api rootProject.ext.net["gson"]
+    api rootProject.ext.net["converter"]
+
+}
