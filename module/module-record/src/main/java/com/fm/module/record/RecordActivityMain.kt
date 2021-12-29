@@ -1,12 +1,17 @@
 package com.fm.module.record
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.RectF
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.camera.core.*
@@ -30,6 +35,10 @@ import com.fm.library.common.constants.ext.toRotaBitmap
 import com.fm.library.face.FaceSdk
 import com.fm.library.face.module.Box
 import com.fm.library.face.Face
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
 import kotlin.concurrent.thread
 import kotlin.math.min
 
@@ -49,6 +58,9 @@ class RecordActivityMain : AppCompatActivity() {
 
     // 选择镜头
     private var mLensFacing = CameraSelector.LENS_FACING_FRONT
+
+    // 用于上传
+    private var mBitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +88,7 @@ class RecordActivityMain : AppCompatActivity() {
         mImageAnalysis.setAnalyzer(mImageAnalysisExecutor) { image ->
             image.use {
                 val bitmap = viewModel.imageToBitmap(image).toRotaBitmap()
+                mBitmap = bitmap // 存一下，用于上传
                 viewModel.detectFace(bitmap)
             }
         }
@@ -214,6 +227,7 @@ class RecordActivityMain : AppCompatActivity() {
 
             viewModel.requestBitmap(name)
 
+            viewModel.updateData(name, mBitmap!!)
 
             mHandler.postDelayed({
                 viewBinding.boxPrediction.visibility = View.GONE
@@ -319,6 +333,42 @@ class RecordActivityMain : AppCompatActivity() {
             )
         }
     }
+    private fun saveBitmap(bitmap: Bitmap) {
+        val sdCardDir =
+            Environment.getExternalStorageDirectory().toString() + "/fingerprintimages/";
+        val fileName = "test"
+        val file = File(sdCardDir, "abc".toString() + ".jpg")
+        try {
+            val dirFile = File(sdCardDir)
+            if (!dirFile.exists()) {              //如果不存在，那就建立这个文件夹
+                dirFile.mkdirs()
+            }
+            val fos = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+            fos.flush()
+            fos.close()
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
 
+        // 把文件插入到系统图库
+        try {
+            MediaStore.Images.Media.insertImage(
+                this.getContentResolver(),
+                file.getAbsolutePath(), fileName, null
+            )
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        }
+        // 通知图库更新
+        sendBroadcast(
+            Intent(
+                Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                Uri.parse("file://" + "/sdcard/namecard/")
+            )
+        )
+    }
 
 }

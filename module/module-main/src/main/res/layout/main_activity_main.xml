@@ -35,5 +35,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="设置" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/main_btn_to_select_pic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="图片选择" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
