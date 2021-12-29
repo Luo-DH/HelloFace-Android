@@ -46,6 +46,15 @@ class MainActivityMain : AppCompatActivity() {
         binding.mainBtnToRecord.setOnClickListener {
             ARouter.getInstance().build(RouterPath.Record.PAGE_RECORD).navigation()
         }
+        binding.mainBtnToHistory.setOnClickListener {
+            ARouter.getInstance().build(RouterPath.Manager.PAGE_HISTORY).navigation()
+        }
+        binding.mainBtnToManager.setOnClickListener {
+            ARouter.getInstance().build(RouterPath.Manager.PAGE_MANAGER).navigation()
+        }
+        binding.mainBtnToSetting.setOnClickListener {
+            ARouter.getInstance().build(RouterPath.Setting.PAGE_SETTING).navigation()
+        }
     }
 
     private fun setupObserver() {

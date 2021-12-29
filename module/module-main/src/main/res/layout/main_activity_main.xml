@@ -18,5 +18,22 @@
             android:layout_height="wrap_content"
             android:text="人脸识别" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/main_btn_to_manager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="人脸库管理" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/main_btn_to_history"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="历史记录" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/main_btn_to_setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="设置" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
