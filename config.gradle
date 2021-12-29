@@ -3,7 +3,7 @@ ext {
     isDebug = true
 
     android = [
-            compileSdk : 30,
+            compileSdk : 31,
             minSdk     : 21,
             targetSdk  : 27,
             versionCode: 1,
