@@ -14,6 +14,7 @@ import com.fm.module.manager.R
 import com.fm.module.manager.User
 import com.fm.module.manager.databinding.ManagerItemHistoryBinding
 import com.fm.module.manager.databinding.ManagerItemStoreBinding
+import com.fm.module.manager.net.FaceMsg
 
 class ManagerStoreAdapter :
     RecyclerView.Adapter<ManagerStoreAdapter.ManagerStoreViewHolder>() {
@@ -36,18 +37,19 @@ class ManagerStoreAdapter :
 
         val data = users[position]
         holder.name.text = data.name
-//        holder.avatar.load("https://pic4.zhimg.com/v2-abed1a8c04700ba7d72b45195223e0ff_im.jpg")
-        holder.avatar.load(R.drawable.ic_launcher_background)
+        holder.avatar.load(data.imgUrl) {
+            crossfade(500)
+        }
     }
 
     override fun getItemCount(): Int = users.size
 
-    private val diffCallback = object : DiffUtil.ItemCallback<User>() {
-        override fun areItemsTheSame(oldItem: User, newItem: User): Boolean {
-            return oldItem.id == newItem.id
+    private val diffCallback = object : DiffUtil.ItemCallback<FaceMsg>() {
+        override fun areItemsTheSame(oldItem: FaceMsg, newItem: FaceMsg): Boolean {
+            return oldItem.name == newItem.name
         }
 
-        override fun areContentsTheSame(oldItem: User, newItem: User): Boolean {
+        override fun areContentsTheSame(oldItem: FaceMsg, newItem: FaceMsg): Boolean {
             return oldItem.hashCode() == newItem.hashCode()
         }
 
@@ -56,7 +58,7 @@ class ManagerStoreAdapter :
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    var users: List<User>
+    var users: List<FaceMsg>
         get() = differ.currentList
         set(value) {
             notifyDataSetChanged()
