@@ -47,9 +47,16 @@ class RecordRepositoryMain {
         return nv21
     }
 
+//    val api = GlobalServiceCreator.create<RecordNetApi>()
+
     suspend fun requestBitmap(name: String): Response<FaceRsp> {
         val api = GlobalServiceCreator.create<RecordNetApi>()
         return api.getFaceBitmap(name)
+    }
+
+    suspend fun updateData(name: String) {
+        val api = GlobalServiceCreator.create<RecordNetApi>()
+        api.updateData11111(name)
     }
 
 }

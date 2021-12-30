@@ -7,8 +7,13 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.fm.library.common.constants.RouterPath
+import com.fm.library.common.constants.net.GlobalServiceCreator
 import com.fm.module.manager.User
 import com.fm.module.manager.databinding.ManagerActivityHistoryBinding
+import com.fm.module.manager.net.ManagerStoreApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
 import kotlin.concurrent.thread
 
 @Route(path = RouterPath.Manager.PAGE_HISTORY)
@@ -31,11 +36,17 @@ class ManagerActivityHistory : AppCompatActivity() {
 
         setupRecyclerView()
 
-        thread {
-            Thread.sleep(5_000)
-            mock()
-            Thread.sleep(5_000)
-            mock2()
+        getHistoryData()
+
+    }
+
+    private fun getHistoryData() {
+        runBlocking {
+            val api = GlobalServiceCreator.create<ManagerStoreApi>()
+            val res = api.getAllHistoryData()
+            if (res.isSuccessful) {
+                historyAdapter.users = res.body()!!.res
+            }
         }
     }
 
@@ -48,37 +59,4 @@ class ManagerActivityHistory : AppCompatActivity() {
         }
     }
 
-    private fun mock() {
-        val users = ArrayList<User>()
-        repeat(50) {
-            users.add(
-                User(
-                    id = it.toString(),
-                    name = "hello$it",
-                    date = System.currentTimeMillis().toString(),
-                    avatar = ""
-                )
-            )
-        }
-        runOnUiThread {
-            historyAdapter.users = users
-        }
-    }
-
-    private fun mock2() {
-        val users = ArrayList<User>()
-        repeat(50) {
-            users.add(
-                User(
-                    id = (it+100).toString(),
-                    name = "hello${it+100}",
-                    date = System.currentTimeMillis().toString(),
-                    avatar = ""
-                )
-            )
-        }
-        runOnUiThread {
-            historyAdapter.users = users
-        }
-    }
 }

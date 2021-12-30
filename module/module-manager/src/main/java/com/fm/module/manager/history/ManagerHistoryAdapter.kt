@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.fm.library.common.constants.RouterPath
+import com.fm.library.common.constants.module.FaceHistorySubRsp
 import com.fm.module.manager.R
 import com.fm.module.manager.User
 import com.fm.module.manager.databinding.ManagerItemHistoryBinding
@@ -36,19 +37,19 @@ class ManagerHistoryAdapter :
 
         val data = users[position]
         holder.name.text = data.name
-        holder.time.text = data.date
+        holder.time.text = data.time
 //        holder.avatar.load("https://pic4.zhimg.com/v2-abed1a8c04700ba7d72b45195223e0ff_im.jpg")
         holder.avatar.load(R.drawable.ic_launcher_background)
     }
 
     override fun getItemCount(): Int = users.size
 
-    private val diffCallback = object : DiffUtil.ItemCallback<User>() {
-        override fun areItemsTheSame(oldItem: User, newItem: User): Boolean {
-            return oldItem.id == newItem.id
+    private val diffCallback = object : DiffUtil.ItemCallback<FaceHistorySubRsp>() {
+        override fun areItemsTheSame(oldItem: FaceHistorySubRsp, newItem: FaceHistorySubRsp): Boolean {
+            return oldItem.name == newItem.name
         }
 
-        override fun areContentsTheSame(oldItem: User, newItem: User): Boolean {
+        override fun areContentsTheSame(oldItem: FaceHistorySubRsp, newItem: FaceHistorySubRsp): Boolean {
             return oldItem.hashCode() == newItem.hashCode()
         }
 
@@ -57,7 +58,7 @@ class ManagerHistoryAdapter :
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    var users: List<User>
+    var users: List<FaceHistorySubRsp>
         get() = differ.currentList
         set(value) {
             notifyDataSetChanged()

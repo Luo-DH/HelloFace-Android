@@ -160,9 +160,9 @@ class RecordViewModelMain(
         }
     }
 
-    fun updateData(name: String, mBitmap: Bitmap) {
+    fun updateData(name: String) {
         viewModelScope.launch(Dispatchers.IO) {
-
+            repository.updateData(name)
         }
     }
 

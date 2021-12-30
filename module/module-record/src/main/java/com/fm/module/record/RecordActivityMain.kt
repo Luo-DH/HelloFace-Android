@@ -225,9 +225,9 @@ class RecordActivityMain : AppCompatActivity() {
             viewModel.clearVoteMap()
             mImageAnalysis.clearAnalyzer()
 
-            viewModel.requestBitmap(name)
+//            viewModel.requestBitmap(name)
 
-            viewModel.updateData(name, mBitmap!!)
+            viewModel.updateData(name)
 
             mHandler.postDelayed({
                 viewBinding.boxPrediction.visibility = View.GONE
