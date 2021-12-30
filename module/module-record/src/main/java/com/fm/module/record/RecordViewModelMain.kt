@@ -149,7 +149,7 @@ class RecordViewModelMain(
 
     fun requestBitmap(name: String?) {
         viewModelScope.launch(Dispatchers.IO) {
-            if (name == null && name == "unknown") {
+            if (name == null || name == "unknown") {
                 _imgUrl.postValue("https://cdn.pixabay.com/photo/2021/10/11/00/59/warning-6699085_1280.png")
             } else {
                 val res = repository.requestBitmap(name!!)

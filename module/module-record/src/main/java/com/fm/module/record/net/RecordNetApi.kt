@@ -9,7 +9,7 @@ import retrofit2.http.Query
 interface RecordNetApi {
 
 
-    @GET("get_face")
+    @GET("/get_face")
     suspend fun getFaceBitmap(@Query("name") name: String): Response<FaceRsp>
 
     @GET("create_history")

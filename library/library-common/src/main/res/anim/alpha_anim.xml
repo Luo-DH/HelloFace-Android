@@ -10,6 +10,7 @@
         android:fillAfter="true"
         android:fromAlpha="1"
         android:toAlpha="0"
-        android:duration="2500"
+        android:duration="3600"
         />
+
 </set>

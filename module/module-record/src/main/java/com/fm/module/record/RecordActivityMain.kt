@@ -85,6 +85,7 @@ class RecordActivityMain : AppCompatActivity() {
     private fun setAnalysis() {
         viewBinding.boxPrediction.visibility = View.GONE
         viewBinding.recordTvRes.visibility = View.GONE
+        viewBinding.recordImShowRes.visibility = View.GONE
         mImageAnalysis.setAnalyzer(mImageAnalysisExecutor) { image ->
             image.use {
                 val bitmap = viewModel.imageToBitmap(image).toRotaBitmap()
@@ -211,9 +212,11 @@ class RecordActivityMain : AppCompatActivity() {
         }
 
         viewModel.imgUrl.observe(this) { imgUrl ->
-//            viewBinding.recordImShowRes.load(imgUrl)
-//            val anim = AnimationUtils.loadAnimation(applicationContext, R.anim.alpha_anim)
-//            viewBinding.recordImShowRes.animation = anim
+            viewBinding.recordImShowRes.visibility = View.VISIBLE
+            val a = viewBinding.recordImShowRes.load(imgUrl)
+            val anim = AnimationUtils.loadAnimation(applicationContext, R.anim.alpha_anim)
+            viewBinding.recordImShowRes.animation = anim
+
         }
 
         // 投票结果
@@ -225,7 +228,7 @@ class RecordActivityMain : AppCompatActivity() {
             viewModel.clearVoteMap()
             mImageAnalysis.clearAnalyzer()
 
-//            viewModel.requestBitmap(name)
+            viewModel.requestBitmap(name)
 
             viewModel.updateData(name)
 
