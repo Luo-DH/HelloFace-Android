@@ -6,10 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".history.ManagerActivityHistory">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/manager_store_rv"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/manager_store_add_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="添加人脸" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/manager_store_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -16,6 +16,18 @@
         android:text="Take Photo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/camera_capture_button2"
+        />
+    <Button
+        android:id="@+id/camera_capture_button2"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="50dp"
+        android:elevation="2dp"
+        android:scaleType="fitCenter"
+        android:text="Take Photo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/camera_capture_button"
         app:layout_constraintRight_toRightOf="parent" />
 
     <androidx.camera.view.PreviewView

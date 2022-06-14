@@ -67,6 +67,12 @@ class MainActivityMain : AppCompatActivity() {
         binding.mainBtnToSetting.setOnClickListener {
             ARouter.getInstance().build(RouterPath.Setting.PAGE_SETTING).navigation()
         }
+        binding.mainBtnToInitPic.setOnClickListener {
+            ARouter.getInstance().build(RouterPath.Init.PAGE_INIT).navigation()
+        }
+        binding.mainBtnToQrcode.setOnClickListener {
+            ARouter.getInstance().build(RouterPath.QRCode.PAGE_QRCODE).navigation()
+        }
         binding.mainBtnToSelectPic.setOnClickListener {
             PictureSelector
                 .create(this, PictureSelector.SELECT_REQUEST_CODE)
@@ -104,13 +110,14 @@ class MainActivityMain : AppCompatActivity() {
         viewModel.dbFaceMap.observe(this) {
             Log.d(TAG, "setupObserver: dbFaceMap = $it")
             Toast.makeText(applicationContext, "人脸转换完毕! ${it.size}", Toast.LENGTH_SHORT).show()
-            Thread.sleep(5000)
+            mThread.join()
             viewModel.initFace(it)
         }
         viewModel.dbFeaMap.observe(this) {
             Log.d(TAG, "setupObserver: dbFeaMap = $it")
             Toast.makeText(applicationContext, "人脸库初始化完毕! ${it.size}", Toast.LENGTH_SHORT).show()
             DBFaceMsg.dbFaceMap = it
+            DBFaceMsg.dbFaceMap2 = it
         }
     }
 
@@ -124,8 +131,10 @@ class MainActivityMain : AppCompatActivity() {
         viewModel.loadFace()
     }
 
+    lateinit var mThread: Thread
+
     private fun loadFaceSdk() {
-        thread {
+        mThread = thread {
             FaceSdk
             FaceSdk.FindFace.init(assets)
             FaceSdk.CheckFace.init(assets)

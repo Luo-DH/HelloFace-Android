@@ -41,5 +41,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="图片选择" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/main_btn_to_init_pic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="初始化" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/main_btn_to_qrcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="二维码" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

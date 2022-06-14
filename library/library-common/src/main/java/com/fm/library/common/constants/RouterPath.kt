@@ -50,4 +50,14 @@ object RouterPath {
         const val PAGE_SETTING = "/setting/$SETTING"
     }
 
+    object Init {
+        private const val INIT = "module_init"
+        const val PAGE_INIT = "/init/$INIT"
+    }
+
+    object QRCode {
+        private const val QRCODE = "module_qrcode"
+        const val PAGE_QRCODE = "/qrcode/$QRCODE"
+    }
+
 }

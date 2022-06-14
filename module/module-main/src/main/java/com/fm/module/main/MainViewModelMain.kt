@@ -32,12 +32,18 @@ class MainViewModelMain(
     val api = GlobalServiceCreator.create<MainNetApi>()
 
     fun loadFace() {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            val rsp = api.getAllFaces()
+//            if (rsp.isSuccessful && rsp.body()!!.code == 0) {
+//                // 获取人脸后，后台进行数据初始化
+//                _dbFaceMap.postValue(repository.initDB(context, rsp.body()!!.res))
+//            }
+//        }
+
         viewModelScope.launch(Dispatchers.IO) {
-            val rsp = api.getAllFaces()
-            if (rsp.isSuccessful && rsp.body()!!.code == 0) {
-                // 获取人脸后，后台进行数据初始化
-                _dbFaceMap.postValue(repository.initDB(context, rsp.body()!!.res))
-            }
+//            val list = repository.loadFace()
+            val map = repository.loadFaceWithFea()
+            _dbFeaMap.postValue(map)
         }
     }
 

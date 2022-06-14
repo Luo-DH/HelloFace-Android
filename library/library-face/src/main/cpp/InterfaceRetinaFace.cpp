@@ -665,7 +665,7 @@ bool find_face_init(JNIEnv *env, jobject thiz, jobject assetManager) {
     opt.use_winograd_convolution = true;
     opt.use_sgemm_convolution = true;
 
-    opt.use_vulkan_compute = true;
+//    opt.use_vulkan_compute = true;
 
     opt.use_fp16_packed = true;
     opt.use_fp16_storage = true;
@@ -679,16 +679,16 @@ bool find_face_init(JNIEnv *env, jobject thiz, jobject assetManager) {
 
     ncnn::set_cpu_powersave(0);
 
-//    // use vulkan compute
-//    if (ncnn::get_gpu_count() != 0) {
-//        opt.use_vulkan_compute = true;
-//    }
+    // use vulkan compute
+    if (ncnn::get_gpu_count() != 0) {
+        opt.use_vulkan_compute = true;
+    }
 
     retinaface2.opt = opt;
 
 
 
-
+//
 //    retinaface2.opt.use_vulkan_compute = true;
 //    retinaface2.opt.use_int8_arithmetic = true;
 //    retinaface2.opt.use_fp16_arithmetic = true;

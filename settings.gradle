@@ -5,6 +5,11 @@ dependencyResolutionManagement {
         mavenCentral()
         jcenter() // Warning: this repository is going to shut down soon
         maven { url "https://jitpack.io" }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
     }
 
 }
@@ -19,3 +24,5 @@ include ':library:library-face'
 include ':module:module-manager'
 include ':module:module-record'
 include ':library:library-net'
+include ':module:module-init'
+include ':module:module-qrcode'

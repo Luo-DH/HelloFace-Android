@@ -30,11 +30,14 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.lifecycle.ViewModelProvider
 import coil.load
+import com.alibaba.android.arouter.launcher.ARouter
 import com.fm.library.common.constants.DBFaceMsg
+import com.fm.library.common.constants.QRCodeMsg
 import com.fm.library.common.constants.ext.toRotaBitmap
 import com.fm.library.face.FaceSdk
 import com.fm.library.face.module.Box
 import com.fm.library.face.Face
+import com.google.common.util.concurrent.ListenableFuture
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -76,10 +79,17 @@ class RecordActivityMain : AppCompatActivity() {
             )
         }
 
+        viewBinding.cameraCaptureButton.setOnClickListener {
+            ARouter.getInstance().build(RouterPath.QRCode.PAGE_QRCODE).navigation()
+        }
+        viewBinding.cameraCaptureButton2.setOnClickListener {
+            DBFaceMsg.dbFaceMap = DBFaceMsg.dbFaceMap2
+        }
+
         setupViewModel()
         setupObserver()
 
-        setAnalysis()
+//        setAnalysis()
     }
 
     private fun setAnalysis() {
@@ -90,6 +100,7 @@ class RecordActivityMain : AppCompatActivity() {
             image.use {
                 val bitmap = viewModel.imageToBitmap(image).toRotaBitmap()
                 mBitmap = bitmap // 存一下，用于上传
+                Log.i(TAG, "setAnalysis: SIZE= ${bitmap.width} == ${bitmap.height}")
                 viewModel.detectFace(bitmap)
             }
         }
@@ -108,10 +119,9 @@ class RecordActivityMain : AppCompatActivity() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(RecordViewModelMain::class.java)
     }
 
-
+    lateinit var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>
     private fun startCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-
+        cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener(Runnable {
             // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
@@ -142,6 +152,15 @@ class RecordActivityMain : AppCompatActivity() {
             }
 
         }, ContextCompat.getMainExecutor(this))
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        if (QRCodeMsg.name.isNotBlank()) {
+            viewModel.requestMsg()
+        }
+
     }
 
     /**
@@ -192,6 +211,16 @@ class RecordActivityMain : AppCompatActivity() {
 
     private fun setupObserver() {
 
+        viewModel.startAnalysis.observe(this) {
+            if (it) {
+                setAnalysis()
+            } else {
+                mImageAnalysis.clearAnalyzer()
+
+                ARouter.getInstance().build(RouterPath.QRCode.PAGE_QRCODE).navigation()
+            }
+        }
+
         // 人脸检测获得数据
         viewModel.detectBox.observe(this) {
             synchronized(this) {
@@ -207,8 +236,8 @@ class RecordActivityMain : AppCompatActivity() {
         }
 
         // 人脸比对结果
-        viewModel.recognizeRes.observe(this) { name ->
-            viewModel.vote(name)
+        viewModel.recognizeRes.observe(this) {
+            viewModel.vote(it.first, it.second)
         }
 
         viewModel.imgUrl.observe(this) { imgUrl ->
@@ -236,9 +265,19 @@ class RecordActivityMain : AppCompatActivity() {
                 viewBinding.boxPrediction.visibility = View.GONE
             }, 500)
 
-            mHandler.postDelayed(Runnable {
+            if (name == "unknown") {
+                mHandler.postDelayed(Runnable {
                 setAnalysis()
-            }, 3500)
+                }, 3500)
+            } else {
+                mHandler.postDelayed(Runnable {
+                    viewBinding.boxPrediction.visibility = View.GONE
+                    viewBinding.recordTvRes.visibility = View.GONE
+                    viewBinding.recordImShowRes.visibility = View.GONE
+                    viewModel.stopAnalysis()
+                }, 3500)
+            }
+
         }
 
     }
@@ -336,6 +375,7 @@ class RecordActivityMain : AppCompatActivity() {
             )
         }
     }
+
     private fun saveBitmap(bitmap: Bitmap) {
         val sdCardDir =
             Environment.getExternalStorageDirectory().toString() + "/fingerprintimages/";

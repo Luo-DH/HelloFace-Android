@@ -18,6 +18,8 @@ dependencies {
         implementation project(':module:module-manager')
         implementation project(':module:module-record')
         implementation project(':module:module-setting')
+        implementation project(':module:module-init')
+        implementation project(':module:module-qrcode')
     }
 
 }

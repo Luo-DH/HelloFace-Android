@@ -1,6 +1,7 @@
 package com.fm.module.main.net
 
 import com.fm.library.common.constants.module.CommonRsp
+import com.fm.library.common.constants.module.FaceMsg2
 import com.fm.library.common.constants.module.FaceRsp
 import okhttp3.MultipartBody
 import retrofit2.Response
@@ -13,6 +14,9 @@ interface MainNetApi {
 
     @GET("/get_face")
     suspend fun getAllFaces(): Response<FaceRsp>
+
+    @GET("/test/faces")
+    suspend fun getAllFaces2(): Response<List<FaceMsg2>>
 
     @Multipart
     @POST("/upload")

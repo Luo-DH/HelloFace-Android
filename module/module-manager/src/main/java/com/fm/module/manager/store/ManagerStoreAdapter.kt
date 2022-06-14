@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.fm.module.manager.databinding.ManagerItemStoreBinding
 import com.fm.library.common.constants.module.FaceMsg
+import com.fm.library.common.constants.module.FaceMsg2
 
 class ManagerStoreAdapter :
     RecyclerView.Adapter<ManagerStoreAdapter.ManagerStoreViewHolder>() {
@@ -32,19 +33,19 @@ class ManagerStoreAdapter :
 
         val data = users[position]
         holder.name.text = data.name
-        holder.avatar.load(data.imgUrl) {
+        holder.avatar.load(data.pic) {
             crossfade(500)
         }
     }
 
     override fun getItemCount(): Int = users.size
 
-    private val diffCallback = object : DiffUtil.ItemCallback<FaceMsg>() {
-        override fun areItemsTheSame(oldItem: FaceMsg, newItem: FaceMsg): Boolean {
+    private val diffCallback = object : DiffUtil.ItemCallback<FaceMsg2>() {
+        override fun areItemsTheSame(oldItem: FaceMsg2, newItem: FaceMsg2): Boolean {
             return oldItem.name == newItem.name
         }
 
-        override fun areContentsTheSame(oldItem: FaceMsg, newItem: FaceMsg): Boolean {
+        override fun areContentsTheSame(oldItem: FaceMsg2, newItem: FaceMsg2): Boolean {
             return oldItem.hashCode() == newItem.hashCode()
         }
 
@@ -53,7 +54,7 @@ class ManagerStoreAdapter :
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    var users: List<FaceMsg>
+    var users: List<FaceMsg2>
         get() = differ.currentList
         set(value) {
             notifyDataSetChanged()
