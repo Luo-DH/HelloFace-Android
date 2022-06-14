@@ -1,0 +1,192 @@
+package com.fm.module.record
+
+import android.graphics.Bitmap
+import android.os.Environment
+import android.provider.MediaStore
+import android.util.Log
+import androidx.camera.core.ImageProxy
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.fm.library.common.constants.DBFaceMsg
+import com.fm.library.face.Utils
+import com.fm.library.face.module.Box
+import com.fm.library.face.toCropBitmap
+import com.fm.library.face.Face
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
+import kotlin.math.max
+import kotlin.system.measureTimeMillis
+
+class RecordViewModelMain(
+    private val repository: RecordRepositoryMain
+) : ViewModel() {
+
+    private val TAG = "RecordViewModelMain"
+
+    // 人脸检测后的人脸框
+    private val _detectBox = MutableLiveData<List<Box>>()
+    val detectBox: LiveData<List<Box>> = _detectBox
+
+    private val _feature = MutableLiveData<FloatArray>()
+    val feature: LiveData<FloatArray> = _feature
+
+    private val _voteRes = MutableLiveData<String>()
+    val voteRes: LiveData<String> = _voteRes
+
+    private val _voteMap = HashMap<String, Int>()
+
+    // 识别结果 空代表陌生人
+    private val _recognizeRes = MutableLiveData<Pair<String?, Float>>()
+    val recognizeRes: LiveData<Pair<String?, Float>> = _recognizeRes
+
+    // 要展示的图片的地址
+    private val _imgUrl = MutableLiveData<String>()
+    val imgUrl: LiveData<String?> = _imgUrl
+
+    private val _startAnalysis = MutableLiveData<Boolean>(false)
+    val startAnalysis: LiveData<Boolean> = _startAnalysis
+
+    fun imageToBitmap(image: ImageProxy): Bitmap = repository.imageToBitmap(image)
+
+    fun detectFace(bitmap: Bitmap) {
+        val smallBitmap = Utils.scaleBitmap(bitmap, 1f)!!
+        // 裁剪bitmap
+        val cast = measureTimeMillis {
+            val res = Face.findFace(smallBitmap).also { it ->
+                it.map { m ->
+                    m.width = smallBitmap.width
+                    m.height = smallBitmap.height
+                }
+            }
+            _detectBox.postValue(res)
+
+            if (res.isNotEmpty()) {
+                getFeature(smallBitmap, res[0])
+            }
+        }
+        Log.d(TAG, "detectFace: ${Thread.currentThread()} castTime=$cast")
+    }
+
+
+    /**
+     * 人脸识别，获得单个人脸特征值
+     */
+    fun getFeature(bitmap: Bitmap, box: Box) {
+
+        viewModelScope.launch {
+            withContext(Dispatchers.Default) {
+                val cast = measureTimeMillis {
+                    _feature.postValue(
+                        Face.getFeature(box.toCropBitmap(bitmap), box)
+                    )
+                }
+                Log.d(TAG, "getFeature: ${Thread.currentThread()} castTime=$cast")
+            }
+        }
+    }
+
+    fun checkFace(feature: FloatArray) {
+        viewModelScope.launch {
+            withContext(Dispatchers.Default) {
+                var maxRes = 0f
+                var maxKey: String? = null
+                Log.d(TAG, "hello checkFace: ============================")
+                DBFaceMsg.dbFaceMap.keys.forEach { key ->
+                    val fea = DBFaceMsg.dbFaceMap[key]!!
+                    val res = Face.checkFace(feature, fea)
+                    Log.d(TAG, "hello checkFace: name=$key res=$res")
+                    if (res > 0.65 && res > maxRes) {
+                        maxRes = res
+                        maxKey = key
+                    }
+                }
+                Log.d(TAG, "hello checkFace: ============================")
+
+                _recognizeRes.postValue(maxKey to maxRes)
+            }
+        }
+    }
+
+    fun vote(name: String?, score: Float) {
+        synchronized(this) {
+            val n = name ?: "unknown"
+            val num = _voteMap[n]
+            var vote = 1
+            if (score <= 0.4 || score >= 0.7) {
+                vote = 2
+            }
+            if (score <= 0.1 || score >= 0.8) {
+                vote = 3
+            }
+            if (num == null) {
+                _voteMap[n] = vote
+            } else {
+                _voteMap[n] = num + vote
+            }
+
+            getMostVote()
+        }
+    }
+
+    private fun getMostVote() {
+        var maxVote = 8
+        var maxKey = ""
+        _voteMap.keys.forEach { key ->
+            val num = _voteMap[key]!!
+            if (num > maxVote) {
+                maxVote = num
+                maxKey = key
+            }
+        }
+        if (maxKey != "") {
+            _voteRes.postValue(maxKey)
+        }
+    }
+
+    fun clearVoteMap() {
+        synchronized(this) {
+            _voteMap.clear()
+        }
+    }
+
+    fun requestBitmap(name: String?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (name == null || name == "unknown") {
+                _imgUrl.postValue("https://cdn.pixabay.com/photo/2021/10/11/00/59/warning-6699085_1280.png")
+            } else {
+                val res = repository.requestBitmap(name)
+                if (res.isSuccessful) {
+                    _imgUrl.postValue(res.body()!!.pic)
+                }
+            }
+        }
+    }
+
+    fun updateData(name: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateData(name)
+        }
+    }
+
+    fun requestMsg() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.reqestMsg()
+
+            _startAnalysis.postValue(true)
+        }
+    }
+
+    fun stopAnalysis() {
+        _startAnalysis.value = false
+    }
+
+
+}
+

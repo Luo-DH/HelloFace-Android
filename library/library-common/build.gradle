@@ -1,0 +1,10 @@
+apply plugin: "com.android.library"
+apply from: "../../base.build.gradle"
+
+dependencies {
+
+    implementation project(":library:library-base")
+    implementation project(":library:library-net")
+
+    api 'com.github.wildma:PictureSelector:2.1.0' // 图片选择
+}

@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ASMIdeaPluginConfiguration">
+    <asm skipDebug="false" skipFrames="false" skipCode="false" expandFrames="false" />
+    <groovy codeStyle="LEGACY" />
+  </component>
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.12335359675785208" />
+        <entry key="module/module-init/src/main/res/drawable/progress_bg.xml" value="0.225" />
+        <entry key="module/module-init/src/main/res/layout/init_activity_main.xml" value="0.335" />
+        <entry key="module/module-init/src/main/res/layout/init_item_store.xml" value="0.12335359675785208" />
+        <entry key="module/module-main/src/main/res/layout/main_activity_main.xml" value="0.18115942028985507" />
+        <entry key="module/module-manager/src/main/res/layout/manager_activity_store.xml" value="0.14010416666666667" />
+        <entry key="module/module-manager/src/main/res/layout/manager_item_store.xml" value="0.1" />
+        <entry key="module/module-qrcode/src/main/res/drawable/y.xml" value="0.20925925925925926" />
+        <entry key="module/module-qrcode/src/main/res/layout/activity_main.xml" value="0.12335359675785208" />
+        <entry key="module/module-qrcode/src/main/res/layout/activity_main_qrcode.xml" value="0.1" />
+        <entry key="module/module-qrcode/src/main/res/layout/activity_qrcode.xml" value="0.1" />
+        <entry key="module/module-qrcode/src/main/res/layout/activity_scanning_qr_code.xml" value="0.13019250253292808" />
+        <entry key="module/module-record/src/main/res/drawable/shape_rectangle.xml" value="0.1796875" />
+        <entry key="module/module-record/src/main/res/layout/record_activity_main.xml" value="0.11980749746707194" />
+      </map>
+    </option>
+  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
